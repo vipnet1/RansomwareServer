@@ -7,8 +7,6 @@ import psutil
 import os
 import ctypes
 import winreg as reg   
-from sqlalchemy import create_engine
-import pandas
 import sys
 app = FastAPI()
 
