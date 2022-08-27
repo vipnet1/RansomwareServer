@@ -2,6 +2,10 @@ from fastapi import FastAPI, Request
 import backend_crypto
 import backend_bitcoin
 import uvicorn
+import multiprocessing
+import psutil
+import os
+import ctypes
 
 app = FastAPI()
 
@@ -24,7 +28,6 @@ async def decript_fernet_key(request: Request):
         return fail_message
 
 
-#ben
 @app.get("/getPublicKey")
 async def get_public_key():
     
@@ -36,9 +39,41 @@ async def get_public_key():
     except Exception as e:
         print(e)
         return {'failed':'server_problem'}
+
+
+def watchdog(selected_pid):
+    import time
     
+
+    #ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server_watchdog_pid", 1)
+    print(f'server watchdog pid: {str(os.getpid())}')
+    while True:
+        time.sleep(5)
+        #print(selected_pid)
+        if not psutil.pid_exists(selected_pid):
+            p = multiprocessing.Process(target=main, args=())
+            p.start()
+            selected_pid = p.pid
+            print(f'server main pid: {selected_pid}')
     
+def set_watchdog():
+    pid_main = os.getpid()
+    p = multiprocessing.Process(target=watchdog, args=(pid_main,))
+    p.start()
+
+
+
+def main():
+    #ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server_main_pid", 1)
+    uvicorn.run("main:app", port=443, host='127.0.0.1', reload = True)
+
+
+
+
 
 if __name__ == "__main__":
     #uvicorn.run(app, host="127.0.0.1", port=8075)
-    uvicorn.run("main:app", port=443, host='127.0.0.1', reload = True)
+    print(f'server main pid: {str(os.getpid())}')
+    set_watchdog()
+    main()
+
