@@ -36,3 +36,7 @@ def decript_fernet_key(fernet_key):
 
     decrypted = decryptor.decrypt(fernet_key)
     return decrypted
+
+
+def get_public_key():
+    return public_key.export_key('OpenSSH').decode('utf-8')
