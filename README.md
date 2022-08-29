@@ -1,11 +1,11 @@
-# Ransomware Server  
-  
-# Description  
-This repo is one of the 2 that build a ransomware. It's the server for the malware to communicate with.  
+# Ransomware Server
+
+# Description
+This repo is one of the 2 that build a ransomware. It's the server for the malware to communicate with.
 Most of description in second repo(Rnasomware).  
   
-The aim is to validate whether recieved transactionId gave me money to the bitcoin wallet, and if so and with the required amount,  
-currently 0.1 milli-bitcoin we encrypt fernet key and return to client. Else we dont. We store used transactionIds so we provide  
+The aim is to validate whether recieved transactionId gave me money to the bitcoin wallet, and if so and with the required amount,
+currently 0.1 milli-bitcoin we encrypt fernet key and return to client. Else we dont. We store used transactionIds so we provide
 only one decryption service per payment.  
   
 Made by Timur Pichkhadze, Ben Itshak Abadayev. Final cyber project Netanya Academic College 2022. Server part.  
